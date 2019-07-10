@@ -1,6 +1,7 @@
 package com.example.instagramtake2;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import java.util.List;
 public class Timeline extends AppCompatActivity {
 
     TimelineAdapter timelineAdapter;
+    private SwipeRefreshLayout swipeContainer;
     ArrayList<Post> posts;
     RecyclerView rvPosts;
     boolean mFirstLoad = true;
@@ -26,7 +28,7 @@ public class Timeline extends AppCompatActivity {
         setContentView(R.layout.timeline);
 
         // find the RecyclerView
-        rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
+        rvPosts = (RecyclerView) findViewById(R.id.rvItems);
         // init the arraylist  (data source)
         posts = new ArrayList<>();
         // construct the adapter from this datasource
@@ -34,6 +36,24 @@ public class Timeline extends AppCompatActivity {
         // RecyclerView setup (layout manager, use adapter)
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvPosts.setLayoutManager(linearLayoutManager);
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeContainer.setRefreshing(false);
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
 
         // set the adapter
         rvPosts.setAdapter(timelineAdapter);
@@ -70,5 +90,10 @@ public class Timeline extends AppCompatActivity {
         });
     }
 
+    public void fetchTimelineAsync(int page) {
+        timelineAdapter.clear();
+        loadPosts();
+        swipeContainer.setRefreshing(false);
+    }
 }
 

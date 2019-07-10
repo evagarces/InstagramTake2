@@ -30,6 +30,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        mPosts.addAll(list);
+        notifyDataSetChanged();
+    }
+
     // for each row, inflate the layout and cache references into ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int ViewType) {
         context = parent.getContext();
