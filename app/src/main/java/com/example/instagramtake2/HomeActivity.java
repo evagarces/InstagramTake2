@@ -73,6 +73,10 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
                 savePost(description, user, photoFile);
+                final Intent intent = new Intent(HomeActivity.this, Timeline.class);
+                startActivity(intent);
+                finish();
+
             }
         });
 
