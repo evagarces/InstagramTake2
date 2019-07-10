@@ -52,7 +52,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         Post post = mPosts.get(position);
 
         // populate the views according to this data
-        holder.tvUsername.setText(post.getUser().getUsername());
+        holder.tvUsername.setText("@" + post.getUser().getUsername());
         holder.tvCaption.setText(post.getDescription());
         Glide.with(context).load(post.getImage().getUrl()).into(holder.ivProfileImage);
 

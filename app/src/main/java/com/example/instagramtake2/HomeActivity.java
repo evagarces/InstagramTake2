@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,12 +32,12 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     private final String TAG = "homeActivity";
-    private Button logoutBtn;
     private ParseUser currentUser;
     private Button picButton;
     private Button postButton;
     private EditText descriptionInput;
     private ImageView ivPostImage;
+    private ImageButton backArrowBtn;
 
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
@@ -47,12 +48,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        logoutBtn = findViewById(R.id.logoutBtn);
         currentUser = ParseUser.getCurrentUser();
         descriptionInput = findViewById(R.id.description_et);
         postButton = findViewById(R.id.postBtn);
         picButton = findViewById(R.id.takepicBtn);
         ivPostImage = findViewById(R.id.ivPostImage);
+        backArrowBtn = findViewById(R.id.backArrowBtn);
 
         picButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,20 +81,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
+        backArrowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentUser != null) {
-                    ParseUser.logOut();
-                    currentUser = ParseUser.getCurrentUser(); // this will now be null
-                    final Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    final Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                final Intent intent = new Intent(HomeActivity.this, Timeline.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
