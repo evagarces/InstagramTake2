@@ -11,13 +11,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.instagramtake2.model.Post;
+import com.parse.ParseFile;
 
 import java.util.List;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
 
     private List<Post> mPosts;
-    Context context;
+    private Context context;
 
     // pass in the Tweets array in the constructor
     public TimelineAdapter(List<Post> posts) {
@@ -54,7 +55,10 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         // populate the views according to this data
         holder.tvUsername.setText("@" + post.getUser().getUsername());
         holder.tvCaption.setText(post.getDescription());
-        Glide.with(context).load(post.getImage().getUrl()).into(holder.ivProfileImage);
+        ParseFile image = post.getImage();
+        if (image != null) {
+            Glide.with(context).load(image.getUrl()).into(holder.ivProfileImage);
+        }
 
     }
 
@@ -64,7 +68,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
+
         public ImageView ivProfileImage;
         public TextView tvUsername;
         public TextView tvCaption;
