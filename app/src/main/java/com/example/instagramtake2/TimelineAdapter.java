@@ -55,6 +55,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         // populate the views according to this data
         holder.tvUsername.setText("@" + post.getUser().getUsername());
         holder.tvCaption.setText(post.getDescription());
+        holder.timeAgo.setText(post.timeStamp());
         ParseFile image = post.getImage();
         if (image != null) {
             Glide.with(context).load(image.getUrl()).into(holder.ivProfileImage);
@@ -73,6 +74,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
         public ImageView ivProfileImage;
         public TextView tvUsername;
         public TextView tvCaption;
+        public TextView timeAgo;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -82,6 +84,9 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             ivProfileImage = (ImageView) itemView.findViewById(R.id.ivPostImage);
             tvUsername = (TextView) itemView.findViewById(R.id.tvUsername);
             tvCaption = (TextView) itemView.findViewById(R.id.tvCaption);
+            timeAgo = (TextView) itemView.findViewById(R.id.timeAgo);
+
+
         }
     }
 }

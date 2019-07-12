@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#4FFFFDD0">
+    android:background="#00FFFFFF">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false" />
+            android:layout_alignParentTop="false"
+            android:background="#00FFFFFF" />
 
 
     </android.support.v4.widget.SwipeRefreshLayout>

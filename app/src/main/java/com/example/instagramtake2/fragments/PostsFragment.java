@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.example.instagramtake2.EndlessRecyclerViewScrollListener;
 import com.example.instagramtake2.LoginActivity;
 import com.example.instagramtake2.R;
 import com.example.instagramtake2.TimelineAdapter;
@@ -27,13 +28,15 @@ import java.util.List;
 
 public class PostsFragment extends Fragment {
 
-    TimelineAdapter timelineAdapter;
+    protected TimelineAdapter timelineAdapter;
     private ParseUser currentUser;
     private SwipeRefreshLayout swipeContainer;
-    ArrayList<Post> posts;
-    RecyclerView rvPosts;
+    protected ArrayList<Post> posts;
+    protected RecyclerView rvPosts;
     boolean mFirstLoad = true;
     private ImageButton logoutBtn;
+    private EndlessRecyclerViewScrollListener scrollListener;
+    public static int page_size = 25;
 
     // the onCreateView method is called when Fragment should create its View object hierarchy
     // either dynamically on via XML layout inflation
@@ -62,6 +65,12 @@ public class PostsFragment extends Fragment {
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                loadNextDataFromParse(page);
+            }
+        };
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -100,12 +109,14 @@ public class PostsFragment extends Fragment {
         });
     }
 
+
+
     // Query messages from Parse so we can load them into the chat adapter
     protected void loadPosts() {
         // Construct query to execute
         Post.Query query = new Post.Query();
         // Configure limit and sort order
-        query.getTop().withUser();
+        query.withUser();
 
         // get the latest 50 messages, order will show up newest to oldest of this group
         query.orderByDescending("createdAt");
@@ -133,5 +144,40 @@ public class PostsFragment extends Fragment {
         timelineAdapter.clear();
         loadPosts();
         swipeContainer.setRefreshing(false);
+    }
+
+    public void loadNextDataFromParse(final int page) {
+        // Construct query to execute
+        Post.Query query = new Post.Query();
+        // Configure limit and sort order
+        query.withUser();
+
+        // get the latest 50 messages, order will show up newest to oldest of this group
+        query.orderByDescending("createdAt");
+        // Execute query to fetch all messages from Parse asynchronously
+        // This is equivalent to a SELECT query with SQL
+        query.findInBackground(new FindCallback<Post>() {
+            public void done(List<Post> posts, ParseException e) {
+                if (e == null) {
+                    posts.clear();
+                    for (int i = page_size * page; i < posts.size(); i++){
+                        if (i >= (page_size*(page +1))) {
+                            break;
+                        }
+
+                        Post post = posts.get(i);
+                        posts.add(post);
+                        timelineAdapter.notifyDataSetChanged(); // update adapter
+                    }
+                    // Scroll to the bottom of the list on initial load
+                    if (mFirstLoad) {
+                        rvPosts.scrollToPosition(0);
+                        mFirstLoad = false;
+                    }
+                } else {
+                    Log.e("message", "Error Loading Messages" + e);
+                }
+            }
+        });
     }
 }

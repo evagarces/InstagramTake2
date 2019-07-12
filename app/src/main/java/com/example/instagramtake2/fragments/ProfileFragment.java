@@ -14,7 +14,7 @@ public class ProfileFragment extends PostsFragment {
     protected void loadPosts() {
         Post.Query query = new Post.Query();
         // Configure limit and sort order
-        query.getTop().withUser();
+        query.withUser();
 
         // get the latest 50 messages, order will show up newest to oldest of this group
         query.orderByDescending("createdAt");
